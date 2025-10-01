@@ -24,41 +24,79 @@ import java.util.Random;
  */
 public final class FlappyBirdClone extends Application {
 
-    /** Canvas dimensions. */
+    /** Canvas width. */
     private static final int CANVAS_WIDTH = 500;
+
+    /** Canvas height. */
     private static final int CANVAS_HEIGHT = 500;
 
-    /** Bird constants. */
+    /** The X-coordinate of the bird. */
     private static final int BIRD_X = 200;
+
+    /** Bird size in pixels. */
     private static final int BIRD_SIZE = 20;
+
+    /** Initial Y-coordinate of the bird. */
     private static final int BIRD_START_Y = 250;
 
-    /** Pipe constants. */
-    private static final int PIPE_WIDTH = 60;
-    private static final int PIPE_GAP = 120;
-    private static final int PIPE_SPEED = 3;
-    private static final int PIPE_START_X = CANVAS_WIDTH;
-    private static final int MIN_PIPE_GAP_Y = 100;
-    private static final int MAX_PIPE_GAP_Y = 350;
-
-    /** Game constants. */
-    private static final int MAX_BIRD_Y = 480;
-    private static final long PIPE_INTERVAL_NS = 2_000_000_000L;
-
-    /** Bird position and velocity. */
-    private double birdY = BIRD_START_Y;
-    private double velocity = 0;
-
-    /** Gravity and flap strength. */
+    /** Gravity affecting the bird. */
     private static final double GRAVITY = 0.5;
+
+    /** Upward jump strength when flapping. */
     private static final double JUMP_STRENGTH = -8;
 
-    /** Game state. */
+    /** Maximum Y-coordinate the bird can fall to. */
+    private static final int MAX_BIRD_Y = 480;
+
+    /** Pipe width in pixels. */
+    private static final int PIPE_WIDTH = 60;
+
+    /** Gap between top and bottom pipes. */
+    private static final int PIPE_GAP = 120;
+
+    /** Pipe moving speed per frame. */
+    private static final int PIPE_SPEED = 3;
+
+    /** Pipe spawn X-coordinate. */
+    private static final int PIPE_START_X = CANVAS_WIDTH;
+
+    /** Minimum Y-coordinate for the pipe gap. */
+    private static final int MIN_PIPE_GAP_Y = 100;
+
+    /** Maximum Y-coordinate for the pipe gap. */
+    private static final int MAX_PIPE_GAP_Y = 350;
+
+    /** Time interval between pipes in nanoseconds. */
+    private static final long PIPE_INTERVAL_NS = 2_000_000_000L;
+
+    /** X-coordinate for score display. */
+    private static final int SCORE_X = 20;
+
+    /** Y-coordinate for score display. */
+    private static final int SCORE_Y = 20;
+
+    /** X-coordinate for game over message. */
+    private static final int GAME_OVER_X = 100;
+
+    /** Y-coordinate for game over message. */
+    private static final int GAME_OVER_Y = 250;
+
+    /** Bird’s current Y-coordinate. */
+    private double birdY = BIRD_START_Y;
+
+    /** Bird’s current velocity. */
+    private double velocity = 0;
+
+    /** Current game over state. */
     private boolean gameOver = false;
+
+    /** Current score of the player. */
     private int score = 0;
 
-    /** Pipes list. */
+    /** List of active pipes. */
     private final List<double[]> pipes = new ArrayList<>();
+
+    /** Random number generator for pipe gaps. */
     private final Random random = new Random();
 
     /**
@@ -178,20 +216,24 @@ public final class FlappyBirdClone extends Application {
 
         // Score.
         gc.setFill(Color.BLACK);
-        gc.fillText("Score: " + score, 20, 20);
+        gc.fillText("Score: " + score, SCORE_X, SCORE_Y);
 
         // Game over message.
         if (gameOver) {
             gc.setFill(Color.RED);
             gc.fillText(
                 "GAME OVER! Press ENTER to Restart",
-                100,
-                250
+                GAME_OVER_X,
+                GAME_OVER_Y
             );
         }
     }
 
-    /** Main entry point. */
+    /**
+     * Main entry point for the application.
+     *
+     * @param args Command line arguments.
+     */
     public static void main(final String[] args) {
         launch(args);
     }
