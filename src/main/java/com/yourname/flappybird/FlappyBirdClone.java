@@ -161,7 +161,7 @@ public final class FlappyBirdClone extends Application {
 
                     // Collision detection.
                     if (pipe[0] < BIRD_X && pipe[0] + PIPE_WIDTH > BIRD_X) {
-                        if (birdY < pipe[1] 
+                        if (birdY < pipe[1]
                             || birdY + BIRD_SIZE > pipe[1] + PIPE_GAP) {
                             gameOver = true;
                         }
@@ -180,7 +180,7 @@ public final class FlappyBirdClone extends Application {
 
     /** Add a new pipe at the right edge of the screen. */
     private void addPipe() {
-        final int gapY = random.nextInt(MAX_PIPE_GAP_Y - MIN_PIPE_GAP_Y) 
+        final int gapY = random.nextInt(MAX_PIPE_GAP_Y - MIN_PIPE_GAP_Y)
                          + MIN_PIPE_GAP_Y;
         pipes.add(new double[]{PIPE_START_X, gapY});
     }
