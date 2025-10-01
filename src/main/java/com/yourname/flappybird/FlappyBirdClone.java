@@ -24,39 +24,40 @@ import java.util.Random;
  */
 public final class FlappyBirdClone extends Application {
 
-    /** Canvas dimensions */
+    /** Canvas dimensions. */
     private static final int CANVAS_WIDTH = 500;
     private static final int CANVAS_HEIGHT = 500;
 
-    /** Bird constants */
+    /** Bird constants. */
     private static final int BIRD_X = 200;
     private static final int BIRD_SIZE = 20;
+    private static final int BIRD_START_Y = 250;
 
-    /** Pipe constants */
+    /** Pipe constants. */
     private static final int PIPE_WIDTH = 60;
     private static final int PIPE_GAP = 120;
     private static final int PIPE_SPEED = 3;
     private static final int PIPE_START_X = CANVAS_WIDTH;
-
-    /** Game constants */
     private static final int MIN_PIPE_GAP_Y = 100;
     private static final int MAX_PIPE_GAP_Y = 350;
+
+    /** Game constants. */
     private static final int MAX_BIRD_Y = 480;
     private static final long PIPE_INTERVAL_NS = 2_000_000_000L;
 
-    /** Bird position and velocity */
-    private double birdY = 250;
+    /** Bird position and velocity. */
+    private double birdY = BIRD_START_Y;
     private double velocity = 0;
 
-    /** Gravity and flap strength */
+    /** Gravity and flap strength. */
     private static final double GRAVITY = 0.5;
     private static final double JUMP_STRENGTH = -8;
 
-    /** Game state */
+    /** Game state. */
     private boolean gameOver = false;
     private int score = 0;
 
-    /** Pipes list */
+    /** Pipes list. */
     private final List<double[]> pipes = new ArrayList<>();
     private final Random random = new Random();
 
@@ -75,7 +76,7 @@ public final class FlappyBirdClone extends Application {
         stage.setTitle("Flappy Bird Clone 🐤");
         stage.show();
 
-        // Handle key presses
+        // Handle key presses.
         scene.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.SPACE && !gameOver) {
                 velocity = JUMP_STRENGTH;
@@ -115,12 +116,12 @@ public final class FlappyBirdClone extends Application {
                     final double[] pipe = it.next();
                     pipe[0] -= PIPE_SPEED;
 
-                    // Score increment
+                    // Score increment.
                     if (pipe[0] == BIRD_X) {
                         score++;
                     }
 
-                    // Collision detection
+                    // Collision detection.
                     if (pipe[0] < BIRD_X && pipe[0] + PIPE_WIDTH > BIRD_X) {
                         if (birdY < pipe[1] || birdY + BIRD_SIZE > pipe[1] + PIPE_GAP) {
                             gameOver = true;
@@ -138,19 +139,15 @@ public final class FlappyBirdClone extends Application {
         }.start();
     }
 
-    /**
-     * Add a new pipe at the right edge of the screen.
-     */
+    /** Add a new pipe at the right edge of the screen. */
     private void addPipe() {
         final int gapY = random.nextInt(MAX_PIPE_GAP_Y - MIN_PIPE_GAP_Y) + MIN_PIPE_GAP_Y;
         pipes.add(new double[]{PIPE_START_X, gapY});
     }
 
-    /**
-     * Reset the game state to start a new game.
-     */
+    /** Reset the game state to start a new game. */
     private void resetGame() {
-        birdY = 250;
+        birdY = BIRD_START_Y;
         velocity = 0;
         pipes.clear();
         score = 0;
@@ -164,37 +161,37 @@ public final class FlappyBirdClone extends Application {
      * @param gc GraphicsContext to draw on.
      */
     private void render(final GraphicsContext gc) {
-        // Background
+        // Background.
         gc.setFill(Color.SKYBLUE);
         gc.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-        // Bird
+        // Bird.
         gc.setFill(Color.YELLOW);
         gc.fillOval(BIRD_X, birdY, BIRD_SIZE, BIRD_SIZE);
 
-        // Pipes
+        // Pipes.
         gc.setFill(Color.GREEN);
         for (final double[] pipe : pipes) {
-            gc.fillRect(pipe[0], 0, PIPE_WIDTH, pipe[1]);               // top pipe
-            gc.fillRect(pipe[0], pipe[1] + PIPE_GAP, PIPE_WIDTH, CANVAS_HEIGHT); // bottom pipe
+            gc.fillRect(pipe[0], 0, PIPE_WIDTH, pipe[1]);
+            gc.fillRect(pipe[0], pipe[1] + PIPE_GAP, PIPE_WIDTH, CANVAS_HEIGHT);
         }
 
-        // Score
+        // Score.
         gc.setFill(Color.BLACK);
         gc.fillText("Score: " + score, 20, 20);
 
-        // Game over message
+        // Game over message.
         if (gameOver) {
             gc.setFill(Color.RED);
-            gc.fillText("GAME OVER! Press ENTER to Restart", 100, 250);
+            gc.fillText(
+                "GAME OVER! Press ENTER to Restart",
+                100,
+                250
+            );
         }
     }
 
-    /**
-     * Main entry point.
-     *
-     * @param args Command line arguments.
-     */
+    /** Main entry point. */
     public static void main(final String[] args) {
         launch(args);
     }
