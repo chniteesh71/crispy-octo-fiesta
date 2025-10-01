@@ -109,7 +109,12 @@ public final class FlappyBirdClone extends Application {
         final Canvas canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
         final GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        final Scene scene = new Scene(new Group(canvas), CANVAS_WIDTH, CANVAS_HEIGHT);
+        final Group root = new Group(canvas);
+        final Scene scene = new Scene(
+          root,
+          CANVAS_WIDTH,
+          CANVAS_HEIGHT
+        );
         stage.setScene(scene);
         stage.setTitle("Flappy Bird Clone 🐤");
         stage.show();
