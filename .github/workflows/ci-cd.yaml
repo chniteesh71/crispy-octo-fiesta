@@ -1,0 +1,71 @@
+name: workflow-for-Java-flappy-app
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  job1-test-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup Java SDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Cache maven dependencies
+        id: cache-deps
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Install dependencies
+        if: steps.cache-deps.outputs.cache-hit != 'true'
+        run: mvn clean install -U -DskipTests
+
+      - name: Run Checkstyle
+        run: mvn -B checkstyle:check
+
+      - name: Run Tests
+        run: mvn -B verify
+      
+      - name: Build JAR
+        run: mvn -B package -DskipTests
+
+      - name: Upload JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: flappy-bird-game-jar
+          path: target/*.jar
+  job2-builder-docker-image:
+     needs: job1-test-build
+     runs-on: ubuntu-latest
+     env:
+        DOCKER_REGISTRY: docker.io
+        APP_NAME: java-name-app
+     steps:
+        - name: checkout the code
+          uses: actions/checkout@v5
+        - name: Check Docker version
+          run: docker --version
+        - name: Log in to Docker
+          uses: docker/login-action@v3
+          with:
+            username: ${{ secrets.DOCKER_USERNAME }}
+            password: ${{ secrets.DOCKER_PASSWORD }}
+        - name: Build and Push Docker Image
+          uses: docker/build-push-action@v6
+          with:
+            context: .
+            push: true
+            tags: |
+              ${{ env.DOCKER_REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/${{ env.APP_NAME }}:latest
+              ${{ env.DOCKER_REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/${{ env.APP_NAME }}:${{ github.sha }}
