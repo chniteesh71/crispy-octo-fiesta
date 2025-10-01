@@ -50,7 +50,7 @@ jobs:
      runs-on: ubuntu-latest
      env:
         DOCKER_REGISTRY: docker.io
-        APP_NAME: java-name-app
+        APP_NAME: java-name-flappy-app
      steps:
         - name: checkout the code
           uses: actions/checkout@v5
